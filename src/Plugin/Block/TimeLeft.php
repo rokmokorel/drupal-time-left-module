@@ -31,18 +31,18 @@ class TimeLeft extends BlockBase {
     $datetime = new DateTime(date("Y-m-d H:i:s", $date_val));
     // zamakni cas za 2 uri
     $datetime->add(new DateInterval('PT2H'));
-    // vrni string
+    // vrni Datetime
     return $datetime;
   }
+
   static function days_till_event($event_date, $current_date) {
     return $interval = $current_date->diff($event_date)->format("%a");
   }
 
-  // MAIN METHOD excepts date and returns the string to be displayed
+  // MAIN METHOD sprejme datum in vrne sporočilo v obliki string
   public function time_left_logic($date) {
     $event_date = $this->calculate_time($date);
-    // $event_date = new DateTime(date("Y-m-d H:i:s", strtotime("2022-08-15 00:00")));
-
+    
     date_default_timezone_set('Europe/Ljubljana');
     $current_date = new DateTime(date("Y-m-d H:i:s"));
 
