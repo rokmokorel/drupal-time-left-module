@@ -1,6 +1,6 @@
 name: Time Left
 type: module
 description: Show time left until event starts.
-package: Custom
+package: Rokson
 
 core_version_requirement: ^9
