@@ -38,6 +38,7 @@ class TimeLeft extends BlockBase {
     return $interval = $current_date->diff($event_date)->format("%a");
   }
 
+  // MAIN METHOD excepts date and returns the string to be displayed
   public function time_left_logic($date) {
     $event_date = $this->calculate_time($date);
     // $event_date = new DateTime(date("Y-m-d H:i:s", strtotime("2022-08-15 00:00")));
