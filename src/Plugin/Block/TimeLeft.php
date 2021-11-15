@@ -40,21 +40,23 @@ class TimeLeft extends BlockBase {
   }
 
   static function prettyprint_difference($interval) {
-    return $interval->y . " let " . $interval->m . " mesecev " . $interval->d . " dni";
+    return "Do dogodka je še " . $interval->y . " let " . $interval->m . " mesecev " . $interval->d . " dni";
     # return $date->format('Y-m-d H:i');
   }
 
-  public function time_left_logic(string $date) {
-    $even_date = $this->calculate_time($date);
+  public function time_left_logic($date) {
+    $event_date = $this->calculate_time($date);
+    // $event_date = new DateTime(date("Y-m-d H:i:s", strtotime("2022-08-15 00:00")));
+
     date_default_timezone_set('Europe/Ljubljana');
     $current_date = new DateTime(date("Y-m-d H:i:s"));
 
     // preverimo ali je dogodek v prihodnosti
-    if ($even_date > $current_date) {
+    if ($event_date > $current_date) {
       $interval = $current_date->diff($event_date);
-      return $interval;
+      return $this->prettyprint_difference($interval);
     // preverimo ali je dogodek tocno v tem trenutku
-    } elseif ($even_date == $current_date) {
+    } elseif ($event_date == $current_date) {
       return "Dogodek je sedaj";
     // sicer je dogodek mimo
     } else {
