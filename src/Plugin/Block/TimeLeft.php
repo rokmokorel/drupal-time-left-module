@@ -39,9 +39,13 @@ class TimeLeft extends BlockBase {
     return $date->format('Y-m-d H:i');
   }
 
-  static function prettyprint_difference($interval) {
-    return "Do dogodka je še " . $interval->y . " let " . $interval->m . " mesecev " . $interval->d . " dni";
-    # return $date->format('Y-m-d H:i');
+  // static function prettyprint_difference($interval) {
+  //   return "Do dogodka je še " . $interval->y . " let " . $interval->m . " mesecev " . $interval->d . " dni";
+  //   # return $date->format('Y-m-d H:i');
+  // }
+
+  static function days_till_event($event_date, $current_date) {
+    return $interval = $current_date->diff($event_date)->format("%a");
   }
 
   public function time_left_logic($date) {
@@ -52,15 +56,14 @@ class TimeLeft extends BlockBase {
     $current_date = new DateTime(date("Y-m-d H:i:s"));
 
     // preverimo ali je dogodek v prihodnosti
-    if ($event_date > $current_date) {
-      $interval = $current_date->diff($event_date);
-      return $this->prettyprint_difference($interval);
+    if ($event_date > $current_date && $this->days_till_event($event_date, $current_date) != "0" ) {
+      return $this->days_till_event($event_date, $current_date) . " days left until event starts";
     // preverimo ali je dogodek tocno v tem trenutku
-    } elseif ($event_date == $current_date) {
-      return "Dogodek je sedaj";
+    } elseif ($event_date > $current_date && $this->days_till_event($event_date, $current_date) == "0" ) {
+      return "This event is happening today";
     // sicer je dogodek mimo
     } else {
-      return "Dogodek je mimo";
+      return "This event already passed.";
     }
 
   }
