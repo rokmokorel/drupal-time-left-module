@@ -1,0 +1,7 @@
+services:
+  time_left.calculate_days_left:
+    class: Drupal\time_left\Services\CalculateDaysLeft
+    arguments: []
+  time_left.get_date:
+    class: Drupal\time_left\Services\GetDate
+    arguments: []

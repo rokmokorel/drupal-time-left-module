@@ -2,13 +2,8 @@
 
 namespace Drupal\time_left\Plugin\Block;
 
-use \DateTime;
-use \DateInterval;
 use Drupal\Core\Block\BlockBase;
 use Drupal\node\ContextProvider\NodeRouteContext;
-// use Drupal\Core\Plugin\Context\ContextDefinition;
-// use Drupal\Core\Annotation\ContextDefinition;
-// use Drupal\Core\Annotation\Translation;
 
 /**
  * Provides a 'Time Left' Block.
@@ -24,51 +19,18 @@ class TimeLeft extends BlockBase {
   /**
    * {@inheritdoc}
    */
-
-  static function calculate_time(string $date) {
-    // pretvori string v Datetime class
-    $date_val= strtotime(str_replace("T"," ", $date));
-    $datetime = new DateTime(date("Y-m-d H:i:s", $date_val));
-    // zamakni cas za 2 uri
-    $datetime->add(new DateInterval('PT2H'));
-    // vrni Datetime
-    return $datetime;
-  }
-
-  static function days_till_event($event_date, $current_date) {
-    return $interval = $current_date->diff($event_date)->format("%a");
-  }
-
-  // MAIN METHOD sprejme datum in vrne sporočilo v obliki string
-  public function time_left_logic($date) {
-    $event_date = $this->calculate_time($date);
-    
-    date_default_timezone_set('Europe/Ljubljana');
-    $current_date = new DateTime(date("Y-m-d H:i:s"));
-
-    // preverimo ali je dogodek v prihodnosti in ni danes
-    if ($event_date > $current_date && $this->days_till_event($event_date, $current_date) != "0" ) {
-      return $this->days_till_event($event_date, $current_date) . " days left until event starts";
-    // preverimo ali je dogodek danes
-    } elseif ($event_date > $current_date && $this->days_till_event($event_date, $current_date) == "0" ) {
-      return "This event is happening today";
-    // sicer je dogodek mimo
-    } else {
-      return "This event already passed.";
-    }
-
-  }
-
+  
   public function build() {
     
-    $node = \Drupal::routeMatch()->getParameter('node');
-    $value = $node->get('field_date')->getValue();
-    $value = $value[0]["value"];
+    // ustvarimo service in zahtevamo podatek
+    $date_raw = \Drupal::service('time_left.get_date')->postServiceData();
     
-    $value = self::time_left_logic($value);
-    
+    // ustvarimo service in naredimo dependancy injection podatkov
+    $days_left_service = \Drupal::service('time_left.calculate_days_left');
+    $days_left_service->get_date($date_raw);
+
     return [
-      '#markup' => $this->t($value),
+      '#markup' => $days_left_service->post_days_left(),
       '#cache' => [
         'max-age' => 0,
       ],
