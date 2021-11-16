@@ -10,26 +10,25 @@ use \DateInterval;
  */
 class CalculateDaysLeft {
 
-  private $date;
+  private string $date;
   
   public function __construct() {
   }
   
   // Dependancy injection podatkov v service.
-  public function get_date(string $value) {
+  public function set_date(string $value) {
     $this->date = $value;
   }
 
   
   // Obdelava podatkov in vracanje podatka.
-  public function post_days_left() {
-    // $event_date = $this->calculate_time($date);
+  public function get_days_left() {
     $event_date = $this->calculate_time($this->date);
     
     date_default_timezone_set('Europe/Ljubljana');
     $current_date = new DateTime(date("Y-m-d H:i:s"));
     
-    // preverimo ali je dogodek v prihodnosti in ni danes
+    // preverimo ali je dogodek v prihodnosti in ali je danes
     if ($event_date > $current_date && $this->na_isti_dan($event_date, $current_date)) {
       return "This event is happening today";
       // preverimo ali je dogodek danes
@@ -43,20 +42,21 @@ class CalculateDaysLeft {
 
   private static function na_isti_dan(DateTime $date1, DateTime $date2)
   {
+    // vrnemo true ali false
     return $date1->format('Y-m-d') == $date2->format('Y-m-d');
   }
 
   private static function calculate_time(string $date) {
-    // pretvori string v Datetime class
+    // pretvori string v Datetime objekt
     $unix_timestap = strtotime(str_replace("T"," ", $date));
     $datetime = new DateTime(date("Y-m-d H:i:s", $unix_timestap));
-    // zamakni cas za 2 uri
+    // zamakni cas za 1 uri
     $datetime->add(new DateInterval('PT1H'));
     // vrni Datetime
     return $datetime;
   }
   
-  private static function days_difference($event_date, $current_date) {
+  private static function days_difference(Datetime $event_date, Datetime $current_date) {
     $interval = $current_date->diff($event_date)->format("%a");
     // ce je do dogodka manj kot 24 ur, vrnemo 1 dan, sicer razliko dni
     return ($interval == "0") ? "1" : $interval;

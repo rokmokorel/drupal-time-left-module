@@ -16,8 +16,7 @@ class GetDate {
   
   // Obdelava podatkov in vracanje podatka.
   public function get_raw_date() {
-    $node = \Drupal::routeMatch()->getParameter('node');
-    $node_value = $node->get('field_date')->getValue();
+    $node_value = \Drupal::routeMatch()->getParameter('node')->get('field_date')->getValue();
     $date = $node_value[0]["value"];
     return $date;
   }
