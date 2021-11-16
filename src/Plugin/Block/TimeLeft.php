@@ -23,7 +23,7 @@ class TimeLeft extends BlockBase {
   public function build() {
     
     // ustvarimo service in zahtevamo podatek
-    $date_raw = \Drupal::service('time_left.get_date')->postServiceData();
+    $date_raw = \Drupal::service('time_left.get_date')->get_raw_date();
     
     // ustvarimo service in naredimo dependancy injection podatkov
     $days_left_service = \Drupal::service('time_left.calculate_days_left');
